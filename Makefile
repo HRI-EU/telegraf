@@ -78,6 +78,7 @@ help:
 	@echo '  tidy       - tidy go modules'
 	@echo '  check-deps - check docs/LICENSE_OF_DEPENDENCIES.md'
 	@echo '  clean      - delete build artifacts'
+	@echo '  distclean  - delete build artifacts and configuration file'
 	@echo ''
 	@echo 'Package Targets:'
 	@$(foreach dist,$(dists),echo "  $(dist)";)
@@ -161,6 +162,10 @@ clean:
 	rm -f plugins/inputs/all/all.go
 	rm -f plugins/outputs/all/all.go
 	rm -f plugins/processors/all/all.go
+
+.PHONY: distclean
+distclean: clean
+	rm -rf build.conf
 
 .PHONY: docker-image
 docker-image:
