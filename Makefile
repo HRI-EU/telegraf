@@ -96,7 +96,7 @@ deps:
 	go mod download
 
 .PHONY: telegraf
-telegraf:
+telegraf: config
 	go build -ldflags "$(LDFLAGS)" ./cmd/telegraf
 
 # Used by dockerfile builds
