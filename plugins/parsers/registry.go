@@ -26,24 +26,6 @@ func Add(name string, creator Creator) {
 	Parsers[name] = creator
 }
 
-type Parser telegraf.Parser
-
-type ParserFunc func() (Parser, error)
-
-// ParserInput is an interface for input plugins that are able to parse
-// arbitrary data formats.
-type ParserInput interface {
-	// SetParser sets the parser function for the interface
-	SetParser(parser Parser)
-}
-
-// ParserFuncInput is an interface for input plugins that are able to parse
-// arbitrary data formats.
-type ParserFuncInput interface {
-	// GetParser returns a new parser.
-	SetParserFunc(fn ParserFunc)
-}
-
 // Config is a struct that covers the data types needed for all parser types,
 // and can be used to instantiate _any_ of the parsers.
 type Config struct {
@@ -124,9 +106,9 @@ type Config struct {
 }
 
 // NewParser returns a Parser interface based on the given config.
-func NewParser(config *Config) (Parser, error) {
+func NewParser(config *Config) (telegraf.Parser, error) {
 	var err error
-	var parser Parser
+	var parser telegraf.Parser
 	switch config.DataFormat {
 	case "json":
 		parser, err = json.New(
@@ -196,7 +178,7 @@ func NewParser(config *Config) (Parser, error) {
 func newGrokParser(metricName string,
 	patterns []string, nPatterns []string,
 	cPatterns string, cPatternFiles []string,
-	tZone string, uniqueTimestamp string) (Parser, error) {
+	tZone string, uniqueTimestamp string) (telegraf.Parser, error) {
 	parser := grok.Parser{
 		Measurement:        metricName,
 		Patterns:           patterns,
@@ -211,11 +193,11 @@ func newGrokParser(metricName string,
 	return &parser, err
 }
 
-func NewNagiosParser() (Parser, error) {
+func NewNagiosParser() (telegraf.Parser, error) {
 	return &nagios.NagiosParser{}, nil
 }
 
-func NewInfluxParser() (Parser, error) {
+func NewInfluxParser() (telegraf.Parser, error) {
 	handler := influx.NewMetricHandler()
 	return influx.NewParser(handler), nil
 }
@@ -224,7 +206,7 @@ func NewGraphiteParser(
 	separator string,
 	templates []string,
 	defaultTags map[string]string,
-) (Parser, error) {
+) (telegraf.Parser, error) {
 	return graphite.NewGraphiteParser(separator, templates, defaultTags)
 }
 
@@ -232,7 +214,7 @@ func NewValueParser(
 	metricName string,
 	dataType string,
 	defaultTags map[string]string,
-) (Parser, error) {
+) (telegraf.Parser, error) {
 	return &value.ValueParser{
 		MetricName:  metricName,
 		DataType:    dataType,
@@ -245,7 +227,7 @@ func NewCollectdParser(
 	securityLevel string,
 	typesDB []string,
 	split string,
-) (Parser, error) {
+) (telegraf.Parser, error) {
 	return collectd.NewCollectdParser(authFile, securityLevel, typesDB, split)
 }
 
@@ -259,7 +241,7 @@ func NewDropwizardParser(
 	separator string,
 	templates []string,
 
-) (Parser, error) {
+) (telegraf.Parser, error) {
 	parser := dropwizard.NewParser()
 	parser.MetricRegistryPath = metricRegistryPath
 	parser.TimePath = timePath
@@ -275,11 +257,11 @@ func NewDropwizardParser(
 }
 
 // NewLogFmtParser returns a logfmt parser with the default options.
-func NewLogFmtParser(metricName string, defaultTags map[string]string) (Parser, error) {
+func NewLogFmtParser(metricName string, defaultTags map[string]string) (telegraf.Parser, error) {
 	return logfmt.NewParser(metricName, defaultTags), nil
 }
 
-func NewWavefrontParser(defaultTags map[string]string) (Parser, error) {
+func NewWavefrontParser(defaultTags map[string]string) (telegraf.Parser, error) {
 	return wavefront.NewWavefrontParser(defaultTags), nil
 }
 
@@ -287,7 +269,7 @@ func NewFormUrlencodedParser(
 	metricName string,
 	defaultTags map[string]string,
 	tagKeys []string,
-) (Parser, error) {
+) (telegraf.Parser, error) {
 	return &form_urlencoded.Parser{
 		MetricName:  metricName,
 		DefaultTags: defaultTags,
@@ -295,7 +277,7 @@ func NewFormUrlencodedParser(
 	}, nil
 }
 
-func NewPrometheusParser(defaultTags map[string]string) (Parser, error) {
+func NewPrometheusParser(defaultTags map[string]string) (telegraf.Parser, error) {
 	return &prometheus.Parser{
 		DefaultTags: defaultTags,
 	}, nil
