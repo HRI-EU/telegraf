@@ -291,7 +291,7 @@ func parseLine(parser telegraf.Parser, line string, lineno int) ([]telegraf.Metr
 
 		// Parse the header information. No metric to return though.
 		nHeader := p.GetHeaderLineCount()
-		if lineno < nSkip + nHeader {
+		if lineno < nSkip+nHeader {
 			err := p.ParseHeaderLine(line)
 			return nil, err
 		}
