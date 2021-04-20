@@ -52,6 +52,7 @@ type field struct {
 	name        string
 	address     uint16
 	length      uint16
+	omit        bool
 	converter   fieldConverterFunc
 	value       interface{}
 }
