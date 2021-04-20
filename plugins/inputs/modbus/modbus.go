@@ -50,7 +50,6 @@ type requestSet struct {
 type field struct {
 	measurement string
 	name        string
-	scale       float64
 	address     uint16
 	length      uint16
 	converter   fieldConverterFunc
