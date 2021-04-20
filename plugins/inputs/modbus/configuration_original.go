@@ -21,6 +21,22 @@ type ConfigurationOriginal struct {
 	InputRegisters   []fieldDefinition `toml:"input_registers"`
 }
 
+func (c *ConfigurationOriginal) Check() error {
+	if err := c.validateFieldDefinitions(c.DiscreteInputs, cDiscreteInputs); err != nil {
+		return err
+	}
+
+	if err := c.validateFieldDefinitions(c.Coils, cCoils); err != nil {
+		return err
+	}
+
+	if err := c.validateFieldDefinitions(c.HoldingRegisters, cHoldingRegisters); err != nil {
+		return err
+	}
+
+	return c.validateFieldDefinitions(c.InputRegisters, cInputRegisters)
+}
+
 func (c *ConfigurationOriginal) Process() (map[byte]requestSet, error) {
 	coil, err := c.initRequests(c.Coils, maxQuantityCoils)
 	if err != nil {
@@ -50,22 +66,6 @@ func (c *ConfigurationOriginal) Process() (map[byte]requestSet, error) {
 			input:    input,
 		},
 	}, nil
-}
-
-func (c *ConfigurationOriginal) Check() error {
-	if err := c.validateFieldDefinitions(c.DiscreteInputs, cDiscreteInputs); err != nil {
-		return err
-	}
-
-	if err := c.validateFieldDefinitions(c.Coils, cCoils); err != nil {
-		return err
-	}
-
-	if err := c.validateFieldDefinitions(c.HoldingRegisters, cHoldingRegisters); err != nil {
-		return err
-	}
-
-	return c.validateFieldDefinitions(c.InputRegisters, cInputRegisters)
 }
 
 func (c *ConfigurationOriginal) initRequests(fieldDefs []fieldDefinition, maxQuantity uint16) ([]request, error) {
