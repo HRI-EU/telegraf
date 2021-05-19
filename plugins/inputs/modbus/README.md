@@ -238,7 +238,9 @@ In case you get an `exception '2' (illegal data address)` error you might try to
 In case you see strange values, the `byte_order` might be off. You can either probe all combinations (`ABCD`, `CDBA`, `BADC` or `DCBA`) or you set `byte_order="ABCD" data_type="UINT32"` and use the resulting value(s) in an online converter like [this](https://www.scadacore.com/tools/programming-calculators/online-hex-converter/). This makes especially sense if you don't want to mess with the device, deal with 64-bit values and/or don't know the `data_type` of your register (e.g. fix-point floating values vs. IEEE floating point).
 
 If nothing helps, please post your configuration, error message and/or the output of `byte_order="ABCD" data_type="UINT32"` to one of the telegraf support channels (forum, slack or as issue).
+
 ---
+
 ### `request` configuration style
 
 This sytle can be used to specify the modbus requests directly. It allows to specify multiple `[[inputs.modbus.request]]` sections including multiple slave-devices. This way, _modbus_ gateway devices can be queried. Please not that _requests_ might be split for non-consecutive addresses. If you want to avoid this behavior please add _fields_ with the `omit` flag set filling the gaps between addresses.
