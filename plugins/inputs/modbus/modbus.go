@@ -253,7 +253,6 @@ func (m *Modbus) initClient() error {
 		return fmt.Errorf("invalid controller %q", m.Controller)
 	}
 
-	m.handler.SetSlave(m.SlaveID)
 	m.client = mb.NewClient(m.handler)
 	m.isConnected = false
 
@@ -274,7 +273,8 @@ func (m *Modbus) disconnect() error {
 }
 
 func (m *Modbus) gatherFields() error {
-	for _, requests := range m.requests {
+	for slaveID, requests := range m.requests {
+		m.handler.SetSlave(slaveID)
 		if err := m.gatherRequestsCoil(requests.coil); err != nil {
 			return err
 		}
